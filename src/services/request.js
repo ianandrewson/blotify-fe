@@ -2,8 +2,7 @@ export const requestJSON = (path, method, body) => {
   return fetch(`${process.env.API_URL}${path}`, {
     method,
     headers: {
-      'Content-Type': 'application/json',
-      'Transfer-Encoding': 'chunked'
+      'Content-Type': 'application/json'
     },
     credentials: 'include',
     body: body && JSON.stringify(body)
@@ -19,7 +18,7 @@ export const requestStream = (path, method, body) => {
   return fetch(`${process.env.API_URL}${path}`, {
     method,
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'audio/mp3',
       'Transfer-Encoding': 'chunked'
     },
     credentials: 'include',

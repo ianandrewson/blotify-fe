@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Writeable } from 'stream';
 import { streamSong } from '../../services/playback';
 
 export default function Player() {
@@ -6,13 +7,21 @@ export default function Player() {
 
   const handleTrackSelection = ({ target }) => setSongId(target.value);
 
-  let playingSong;
-  streamSong(1)
+  let playingSong = streamSong(1)
     .then(res => {
-      console.log(res.body);
-      playingSong = res.body;
-    })
-    .catch(err => console.log(err));
+      // playingSong = res.body.getReader();
+      // console.log(playingSong);
+      // return playingSong;
+      return res.body.getReader();
+    });
+    // .then(reader => reader.read())
+    // .then(({ done, value}) => {
+    //   console.log(value);
+    //   const data = new Blob(value);
+    //   const url = URL.createObjectURL(data);
+    //   console.log(url);
+    // })
+    // .catch(err => console.log(err));
 
 
   return (
