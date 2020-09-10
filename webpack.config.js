@@ -23,9 +23,15 @@ module.exports = {
     new Dotenv({
       systemvars: true
     }),
-    new CopyPlugin([
-      { from: 'src/assets', to: 'assets' },
-    ])
+    new CopyPlugin({
+      // patterns: [
+      //   { from: 'src', to: 'dest' },
+      //   { from: 'other', to: 'public' },
+      // ]
+      patterns: [
+        { from: 'src' }
+      ]
+    }),
   ],
   module: {
     rules: [

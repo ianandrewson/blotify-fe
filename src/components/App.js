@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import Player from './player/Player';
 import styles from './App.css';
 
 export default function App() {
@@ -9,7 +10,7 @@ export default function App() {
         <Router>
           {/* <Header /> */}
           <Switch>
-            {/* <Route exact path='/' component={Home} /> */}
+            <Route exact path='/' component={Player} />
           </Switch>
           {/* <Footer /> */}
         </Router>
