@@ -1,9 +1,9 @@
-import { request } from './request';
+import { requestJSON, requestStream } from './request';
 
 export const streamSong = (songId) => {
-  return request(`/playback/${songId}`, 'GET');
+  return requestStream(`/playback/${songId}`, 'GET');
 };
 
 export const getSongs = () => {
-  return request('/library', 'GET');
+  return requestJSON('/library', 'GET');
 };

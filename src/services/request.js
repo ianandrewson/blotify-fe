@@ -1,8 +1,9 @@
-export const request = (path, method, body) => {
+export const requestJSON = (path, method, body) => {
   return fetch(`${process.env.API_URL}${path}`, {
     method,
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Transfer-Encoding': 'chunked'
     },
     credentials: 'include',
     body: body && JSON.stringify(body)
@@ -12,4 +13,16 @@ export const request = (path, method, body) => {
       if(!ok) throw json;
       return json;
     });
+};
+
+export const requestStream = (path, method, body) => {
+  return fetch(`${process.env.API_URL}${path}`, {
+    method,
+    headers: {
+      'Content-Type': 'application/json',
+      'Transfer-Encoding': 'chunked'
+    },
+    credentials: 'include',
+    body: body && JSON.stringify(body)
+  });
 };
