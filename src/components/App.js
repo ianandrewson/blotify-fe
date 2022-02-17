@@ -13,8 +13,8 @@ export default function App() {
           <Switch>
             <Route exact path='/' component={Library} />
           </Switch>
-          <Player />
         </Router>
+        <Player />
       </div>
     </div>
   );
