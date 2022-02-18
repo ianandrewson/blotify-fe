@@ -9,17 +9,18 @@ export const requestJSON = (path, method, body) => {
   })
     .then(res => Promise.all([res.ok, res.json()]))
     .then(([ok, json]) => {
-      if(!ok) throw json;
+      if (!ok) throw json;
       return json;
     });
 };
 
-export const requestStream = (path, method, body) => {
+export const requestStream = (path, method, addHeaders, body) => {
   return fetch(`${process.env.API_URL}${path}`, {
     method,
     headers: {
       'Content-Type': 'audio/mp3',
-      'Transfer-Encoding': 'chunked'
+      'Transfer-Encoding': 'chunked',
+      ...addHeaders
     },
     credentials: 'include',
     body: body && JSON.stringify(body)

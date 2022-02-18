@@ -1,15 +1,51 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 // import { Writeable } from 'stream';
-import { streamSong } from '../../services/playback';
+import {streamSong} from '../../services/playback';
 
 export default function Player() {
   const [songId, setSongId] = useState('');
   const [songData, setSongData] = useState();
-  
+
   // const AudioContext = window.AudioContext;
   // const audioCtx = new AudioContext();
 
   // THIS IS THE CLOSEST TO WORKING
+  useEffect(() => {
+    const buffer = new Uint8Array();
+    console.log(buffer.length)
+
+    if (songId) {
+      streamSong(songId, {
+        'Range': '45789360'
+      })
+        .then(res => {
+          const reader = res.body.getReader();
+
+          reader.read()
+            .then(function processStream({done, value}) {
+              // console.log('done: ', done, '; value: ', value);
+              if (done) return;
+              // console.log(value);
+
+              // const data = new Blob([value], {type: 'audio/mp3'});
+
+              buffer.set(value, buffer.length);
+              console.log(buffer.length);
+
+              // console.log(data);
+              // return URL.createObjectURL(data);
+              return reader.read().then(processStream);
+            });
+        })
+        .then(() => {
+          const data = new Blob([buffer], {type: 'audio/mp3'});
+          const songData = URL.createObjectURL(data);
+          setSongData(songData);
+          // console.log('audioData: ', audioData);
+        });
+    }
+  }, [songId]);
+
   // useEffect(() => {
   //   if(songId) {
   //     streamSong(songId)
@@ -17,14 +53,32 @@ export default function Player() {
   //         return res.body.getReader();
   //       })
   //       .then(reader => {
-  //         return reader.read();
+  //         //promisfy this
+  //         //resolve with array of all data
+  //         //iterate with while loop, push read to result, resolve result
+  //         //closure while condition, updated when done is true
+  //         return new Promise((resolve, reject) => {
+  //           let result;
+  //           let finished = false;
+  //           debugger;
+  //           while(!finished) {
+  //             console.log('reading');
+  //             reader.read()
+  //               .then(({ done, value }) => {
+  //                 console.log('looking at data');
+  //                 if(done) {
+  //                   finished = true;
+  //                   resolve(result);
+  //                 }
+  //                 console.log('value: ', value);
+  //                 result += value;
+  //               });
+  //           }
+  //         });
   //       })
-  //       .then(({ done, value }) => {
-  //         // console.log('done: ', done, '; value: ', value);
-  //         // if(done) return;
-  //         console.log(value);
-  //         const data = new Blob([value], { type: 'audio/mp3' });
-  //         // console.log(data);
+  //       .then(rawData => {
+  //         const data = new Blob([rawData], { type: 'audio/mp3' });
+  //         console.log(data);
   //         return URL.createObjectURL(data);
   //       })
   //       .then(audioData => {
@@ -34,49 +88,7 @@ export default function Player() {
   //   }
   // }, [songId]);
 
-  useEffect(() => {
-    if(songId) {
-      streamSong(songId)
-        .then(res => {
-          return res.body.getReader();
-        })
-        .then(reader => {
-          //promisfy this
-          //resolve with array of all data
-          //iterate with while loop, push read to result, resolve result
-          //closure while condition, updated when done is true
-          return new Promise((resolve, reject) => {
-            let result;
-            let finished = false;
-            debugger;
-            while(!finished) {
-              console.log('reading');
-              reader.read()
-                .then(({ done, value }) => {
-                  console.log('looking at data');
-                  if(done) {
-                    finished = true;
-                    resolve(result);
-                  }
-                  console.log('value: ', value);
-                  result += value;
-                });
-            }
-          });
-        })
-        .then(rawData => {
-          const data = new Blob([rawData], { type: 'audio/mp3' });
-          console.log(data);
-          return URL.createObjectURL(data);
-        })
-        .then(audioData => {
-          setSongData(audioData);
-          console.log('audioData: ', audioData);
-        });
-    }
-  }, [songId]);
-
-  const handleTrackSelection = ({ target }) => setSongId(target.value);
+  const handleTrackSelection = ({target}) => setSongId(target.value);
 
 
   return (
@@ -88,9 +100,12 @@ export default function Player() {
         This is a dummy track selector, since the table to play songs has not been implemented yet.
       </p>
       <input type='text' onChange={handleTrackSelection} value={songId} />
-      {<audio controls src={songData}>
-        Your browser does not support an audio player.
-      </audio>}
+      {
+        <audio controls src={songData}>
+          Your browser does not support an audio player.
+          {/* <source  type="audio/mp3" /> */}
+        </audio>
+      }
     </>
   );
 }

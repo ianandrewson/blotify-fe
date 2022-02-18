@@ -1,7 +1,7 @@
-import { requestJSON, requestStream } from './request';
+import {requestJSON, requestStream} from './request';
 
-export const streamSong = (songId) => {
-  return requestStream(`/playback/${songId}`, 'GET');
+export const streamSong = (songId, addHeaders = {}) => {
+  return requestStream(`/playback/${songId}`, 'GET', addHeaders);
 };
 
 export const getSongs = () => {
